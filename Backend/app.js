@@ -25,6 +25,8 @@ const userRouter = require("./routes/User");
 const friendRoutes = require('./routes/friends');
 const commentRouter = require('./routes/comment');
 const notificationRouter = require('./routes/notification');
+const likeRouter = require('./routes/like');
+
 
 
 app.use(cors(corsOptions));
@@ -35,6 +37,8 @@ app.use("/", userRouter);
 app.use("/", friendRoutes);
 app.use("/comment", commentRouter);
 app.use("/notif", notificationRouter);
+app.use("/like", likeRouter);
+
 
 app.use("*", (req, res) => res.status(404).json("No content at this path"));
 

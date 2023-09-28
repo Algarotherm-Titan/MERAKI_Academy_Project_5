@@ -15,8 +15,6 @@ import {
   GridItem,
 
 } from "@chakra-ui/react";
-
-
 import { setToggleProf, setUsers } from "../redux/authSlicer/auth";
 import { getUserFriends } from "../redux/frinedSlicer/friends";
 

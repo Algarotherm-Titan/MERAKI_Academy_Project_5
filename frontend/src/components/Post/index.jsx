@@ -28,7 +28,7 @@ const Post = () => {
   const users = useSelector((state) => state.auth.users);
   const user_id = useSelector((state) => state.auth.user_id);
   const toggleProf = useSelector((state) => state.auth.toggleProf);
-  console.log(posts);
+
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
@@ -127,7 +127,7 @@ const Post = () => {
                 )}
               </div>
               <div className="itemP">
-                 <Like /> 
+                 <Like post={post} getPostsByUser={getPostsByUser} getPosts={getPosts}/> 
                 <TextsmsOutlinedIcon
                   onClick={() => {
                     setCommentUP((show) => !show);

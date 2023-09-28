@@ -26,7 +26,12 @@ const createNewPost = (req, res) => {
 };
 
 const getAllPosts = (req, res) => {
-  const query = `SELECT * FROM posts a WHERE a.is_deleted=0;`;
+  const query = `SELECT
+  posts.*  ,
+  (SELECT JSON_AGG(likes.*) FROM likes WHERE likes.post_id = posts.post_id) AS likes
+FROM
+  posts
+  WHERE posts.is_deleted = 0;`;
 
   pool
     .query(query)
@@ -112,7 +117,6 @@ WHERE posts.post_id = $1 AND posts.is_deleted = 0;`;
 
 const updatePostById = (req, res) => {
   const post_id = req.params.id;
-  console.log(post_id);
   const { title, content } = req.body;
 
   const query = `UPDATE posts
