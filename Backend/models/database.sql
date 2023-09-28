@@ -29,7 +29,7 @@ CREATE TABLE posts (
     title varchar,
     content text,
     image_url varchar,
-    created_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW(),
     is_deleted SMALLINT DEFAULT 0
 );
 
@@ -38,14 +38,16 @@ CREATE TABLE comments (
     user_id integer REFERENCES users(id),
     post_id integer REFERENCES posts(post_id),
     content text,
-    created_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW(),
+    is_deleted SMALLINT DEFAULT 0
+
 );
 
 CREATE TABLE likes (
     like_id serial PRIMARY KEY,
     user_id integer REFERENCES users(id),
     post_id integer REFERENCES posts(post_id),
-    created_at TIMESTAMP,
+    is_deleted SMALLINT DEFAULT 0
 );
 
 CREATE TABLE notification (

@@ -42,7 +42,7 @@ const AddPost = () => {
       });
     setTimeout(() => {
       setLoading(false);
-    }, 1500);
+    }, 1000);
   };
 
   const userP = users?.find((user1) => user?.id === user1.id);
