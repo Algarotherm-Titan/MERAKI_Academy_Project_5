@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./style.css";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import { BsChevronCompactLeft, BsChevronCompactRight } from "react-icons/bs";
-import { RxDotFilled } from "react-icons/rx";
 import {
   Modal,
   ModalOverlay,
@@ -13,50 +11,32 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-} from "@chakra-ui/react";
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  Text,
   Image,
-  Heading,
   Button,
-  Stack,
   Divider,
-  ButtonGroup,
-  Input,
-  Box,
-  Img,
 } from "@chakra-ui/react";
-import { useSelector, useDispatch } from "react-redux";
-import { setCards } from "../redux/cardSlicer/card";
+import { useSelector } from "react-redux";
 import NavBar from "../Navbar";
 import { useNavigate } from "react-router-dom";
 const Shope = () => {
-  const dispatch = useDispatch();
-  const [show, setShow] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [scrolly, setScrolly] = useState(false);
-  const [card, setCard] = useState({
-    card_name: "",
-    card_description: "",
-    card_image: "",
-    archetype: "",
-    attack: "",
-    card_prices: "",
-  });
   const [users, setUsers] = useState([]);
-  const cards = useSelector((state) => state.cards.cards);
+  const [imgCard, setImgCard] = useState([]);
   const user = useSelector((state) => state.auth.userInfo);
   const userId = useSelector((state) => state.auth.userId);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const token = useSelector((state) => state.auth.token);
+  const {
+    isOpen: isOpenModal1,
+    onOpen: onOpenModal1,
+    onClose: onCloseModal1,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenModal2,
+    onOpen: onOpenModal2,
+    onClose: onCloseModal2,
+  } = useDisclosure();
   const navigate = useNavigate();
 
-  const config = {
-    headers: { Authorization: `Bearer ${token}` },
-  };
   const userShop = users?.find((user1) => user?.id === user1?.id);
 
   useEffect(() => {
@@ -84,16 +64,6 @@ const Shope = () => {
     setUser();
   }, []);
 
-  const getCards = async () => {
-    await axios
-      .get(`http://localhost:5000/card`)
-      .then((res) => {
-        dispatch(setCards(res.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   const buyCommenCard = async (price) => {
     try {
       const response = await axios.post(
@@ -103,6 +73,7 @@ const Shope = () => {
           userId,
         }
       );
+      setImgCard(response.data.image);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -270,7 +241,7 @@ const Shope = () => {
                   backgroundImage: `url(https://res.cloudinary.com/dv7ygzpv8/image/upload/v1697099697/ionia-frame-35_zyzxbj.jpg)`,
                 }}
                 className="slider-image"
-                onClick={onOpen}
+                onClick={onOpenModal1}
               >
                 <p className="pName1">Bandles Cards</p>
                 <img
@@ -327,7 +298,7 @@ const Shope = () => {
             </div>
           </div>
         </div>
-        <Modal onClose={onClose} isOpen={isOpen} isCentered>
+        <Modal onClose={onCloseModal1} isOpen={isOpenModal1} isCentered>
           <ModalOverlay />
           <ModalContent
             style={{
@@ -350,7 +321,8 @@ const Shope = () => {
                 onClick={() => {
                   buyCommenCard(1000);
                   setUser();
-                  onClose();
+                  onCloseModal1();
+                  onOpenModal2();
                 }}
               >
                 <img
@@ -359,12 +331,46 @@ const Shope = () => {
                 />
                 <span style={{ color: "rgb(255, 217, 0)" }}>1000</span>
               </Button>
-              <Button colorScheme="blue" px={6} py={6} onClick={onClose}>
+              <Button colorScheme="blue" px={6} py={6} onClick={onCloseModal1}>
                 Close
               </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
+        {imgCard && (
+          <Modal onClose={onCloseModal2} isOpen={isOpenModal2} isCentered>
+            <ModalOverlay />
+            <ModalContent
+              style={{
+                backgroundImage: `url(https://res.cloudinary.com/dv7ygzpv8/image/upload/v1697100398/runeterra-demacia-03_me3rbs.jpg)`,
+                backgroundSize: "cover",
+                maxWidth: "1300px",
+              }}
+            >
+              <ModalHeader>Bandles Cards</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody
+                display="grid"
+                gridTemplateColumns="1fr 1fr 1fr 1fr 1fr"
+                maxH="500px"
+              >
+                {imgCard?.map((imgC, i) => (
+                  <Image src={imgC} fallbackSrc="" key={i} />
+                ))}
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  colorScheme="blue"
+                  px={6}
+                  py={6}
+                  onClick={onCloseModal2}
+                >
+                  Close
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        )}
       </div>
       <div className="overlay">
         <video

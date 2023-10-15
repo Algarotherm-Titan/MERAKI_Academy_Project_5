@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../Navbar/index";
-import { Link } from "react-router-dom";
-import { UnorderedList, ListItem } from "@chakra-ui/react";
 import { Grid, GridItem, Image, Box } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -31,24 +29,6 @@ const CardList = () => {
     };
   }, []);
 
-  const getCard = async () => {
-    try {
-      const response = await axios.get(
-        "https://db.ygoprodeck.com/api/v7/cardinfo.php?format=Speed%20Duel"
-      );
-      console.log(response.data);
-      if (response.data) {
-        const filteredCards = response.data.data.filter(
-          (card) => card.frameType !== "spell" && card.frameType !== "trap"
-        );
-        setCards(filteredCards);
-      } else {
-        console.log("err");
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
   const getCards = async () => {
     await axios
       .get(`http://localhost:5000/card`)
@@ -59,7 +39,7 @@ const CardList = () => {
         console.log(error);
       });
   };
-
+  
   return (
     <div>
       <div className="overlay">
@@ -86,7 +66,10 @@ const CardList = () => {
         <div>
           <Grid templateColumns="repeat(6, 1fr)" gap={3} p="100px">
             {cards?.map((card) => (
-              <GridItem key={card.card_id} style={{ position: "relative", top: "30%" }}>
+              <GridItem
+                key={card.card_id}
+                style={{ position: "relative", top: "30%" }}
+              >
                 <Box>
                   <Image src={card.card_image} alt={card.card_name} />
                 </Box>

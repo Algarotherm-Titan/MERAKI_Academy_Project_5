@@ -211,7 +211,7 @@ const moreCard = async (req, res) => {
   try {
     for (const card of cardData) {
       const { name, regions, assets, type, attack } = card;
-      if ( type === "Unit") {
+      if (type === "Unit") {
         await pool.query(
           "INSERT INTO Cards  (card_name, card_regions, card_image, card_type, attack) VALUES ($1, $2, $3, $4, $5)",
           [name, regions, assets[0].gameAbsolutePath, type, attack]
@@ -256,15 +256,16 @@ const getRandomCards = async (req, res) => {
     const rows = await pool.query(
       "SELECT * FROM cards ORDER BY RANDOM() LIMIT 5"
     );
-
+    console.log(rows.rows);
     const randomCards = rows.rows.map((row) => row.card_id); // Access 'rows' property
+    const image = rows.rows.map((row) => row.card_image)
     for (const card of randomCards) {
       await pool.query(
         "INSERT INTO user_cards (user_id, card_id) VALUES ($1, $2)",
         [userId, card]
       );
     }
-    res.json({ randomCards, cryptoAmount: newCryptoAmount });
+    res.json({ randomCards, cryptoAmount: newCryptoAmount ,image});
   } catch (error) {
     console.error("Error in getRandomCards:", error.message);
     res.status(500).json({ error: "An error occurred" });
