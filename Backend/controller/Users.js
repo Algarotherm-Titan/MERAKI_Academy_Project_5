@@ -81,7 +81,7 @@ const login = async (req, res) => {
   } catch (error) {
     console.error(`Error creating acount`, error);
     return res.status(500).json({
-      message: "Error creating acount",
+      message: "Error login acount",
       success: false,
     });
   }
