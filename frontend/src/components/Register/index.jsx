@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import "./style.css";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import YourImage from "../Navbar/logoo-removebg-preview.png";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -51,7 +50,7 @@ const Register = () => {
 
 <form class="form_container">
       <div class="logo_container">
-        <img src={YourImage} />
+        <img src={""} />
       </div>
       <div class="title_container">
         <p class="title">Login to your Account</p>

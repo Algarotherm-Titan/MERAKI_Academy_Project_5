@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogout, setUser_id, setToggleProf } from "../redux/authSlicer/auth";
 import { useNavigate } from "react-router-dom";
-import YourImage from "../Navbar/logoo-removebg-preview.png";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -41,7 +40,7 @@ const NavBar = ({ users, getUserByID, getPostsByUser }) => {
         <Navbar key={expand} expand={expand} id="id">
           <Container fluid>
             <Navbar.Brand href="#">
-              <img className="img" src={YourImage} alt="" />
+              <img className="img" src={""} alt="" />
             </Navbar.Brand>
             <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
             <Navbar.Offcanvas
