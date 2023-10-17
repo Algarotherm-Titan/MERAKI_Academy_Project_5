@@ -7,7 +7,7 @@ const cors = require("cors");
 
 
 
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = ["https://celebrated-caramel-c47839.netlify.app/"];
 const corsOptions = {
   origin: (origin, callback) => {
     if (allowedOrigins.includes(origin) || !origin) {
@@ -29,11 +29,11 @@ const notificationRouter = require("./routes/notification");
 const likeRouter = require("./routes/like");
 const cardRouter = require("./routes/cards");
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.use("/permission", permissionRouter);
 app.use("/posts", postsRouter);
 app.use("/", roleRouter);
-app.use("/", userRouter);
+app.use("/users", userRouter);
 app.use("/", friendRoutes);
 app.use("/comment", commentRouter);
 app.use("/notif", notificationRouter);
