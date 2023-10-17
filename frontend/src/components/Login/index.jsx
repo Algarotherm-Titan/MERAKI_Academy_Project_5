@@ -10,7 +10,6 @@ import {
   setUserInfo,
   setOnlineUsers,
 } from "../redux/authSlicer/auth";
-import YourImage from "../Navbar/logoo-removebg-preview.png";
 
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -75,7 +74,7 @@ const Login = () => {
   return (
     <form class="form_container">
       <div class="logo_container">
-        <img src={YourImage} />
+        <img src={""} />
       </div>
       <div class="title_container">
         <p class="title">Login to your Account</p>
