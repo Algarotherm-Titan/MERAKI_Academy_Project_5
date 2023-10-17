@@ -3,12 +3,12 @@ const userRouter = express.Router();
 const { register, login, getAllUsers ,userByUserName,getUserById,updateUserById,updateUserImage} = require("../controller/Users");
 const authentication = require("../middleware/authentication");
 
-userRouter.post("/users/register", register);
-userRouter.post("/users/login", login);
-userRouter.get("/users/getAllUser", getAllUsers);
-userRouter.get("/user/:username", userByUserName);
-userRouter.get("/users/:id", getUserById);
-userRouter.put("/users",authentication, updateUserById);
-userRouter.put("/users/image",authentication, updateUserImage);
+userRouter.post("/register", register);
+userRouter.post("/login", login);
+userRouter.get("/getAllUser", getAllUsers);
+userRouter.get("/:username", userByUserName);
+userRouter.get("/:id", getUserById);
+userRouter.put("/",authentication, updateUserById);
+userRouter.put("/image",authentication, updateUserImage);
 
 module.exports = userRouter;
