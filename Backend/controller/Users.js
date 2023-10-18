@@ -44,29 +44,37 @@ const login = async (req, res) => {
     const findUser = await pool.query(`SELECT * FROM users WHERE email =$1`, [
       email,
     ]);
+
     if (findUser.rows.length === 0) {
       return res.status(403).json({
         success: false,
-        message:
-          "The email doesn’t exist or the password you’ve entered is incorrect",
+        message: "The email doesn’t exist or the password you’ve entered is incorrect",
       });
     }
+
     const user = findUser.rows[0];
+    const userId = user.id; 
 
     const thePassword = await bcrypt.compare(password, user.password);
     if (!thePassword) {
       return res.status(403).json({
         success: false,
-        message:
-          "The email doesn’t exist or the password you’ve entered is incorrect",
+        message: "The email doesn’t exist or the password you’ve entered is incorrect",
       });
     }
+
+    const userCards = await pool.query(`SELECT * FROM user_cards WHERE user_id = $1`, [
+      userId,
+    ]);
+
     const payload = {
       userId: user.id.toString(),
       role: user.role,
       username: user.username,
       user: user,
+      userCards: userCards.rows,
     };
+
     const secretKey = process.env.SECRET || "dark";
     const token = jwt.sign(payload, secretKey, { expiresIn: "900m" });
 
@@ -77,20 +85,24 @@ const login = async (req, res) => {
       userId: user.id,
       role: user.role,
       user: user,
+      userCards: userCards.rows, 
     });
   } catch (error) {
-    console.error(`Error creating acount`, error);
+    console.error(`Error creating account`, error);
     return res.status(500).json({
-      message: "Error login acount",
+      message: "Error login account",
       success: false,
     });
   }
 };
 
+
 const getAllUsers = async (req, res) => {
   try {
-    const response = await pool.query(`SELECT users.* ,  
-    (SELECT JSON_AGG(user_cards.*) FROM user_cards WHERE user_cards.user_id = users.id) AS user_cards 
+    const response = await pool.query(`SELECT users.* ,
+(SELECT JSON_AGG(user_cards.*)
+FROM user_cards
+ WHERE user_cards.user_id = users.id) AS user_cards 
     FROM users`);
     if (response) {
       res.status(200).json(response.rows);
