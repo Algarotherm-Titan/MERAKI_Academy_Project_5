@@ -31,7 +31,7 @@ const CardList = () => {
 
   const getCards = async () => {
     await axios
-      .get(`http://localhost:5000/card`)
+      .get(`https://backend-kxp7.onrender.com/card`)
       .then((res) => {
         dispatch(setCards(res.data));
       })

@@ -19,7 +19,7 @@ import {
 import { useColorModeValue } from "@chakra-ui/react";
 import GameNavbar from "./onlineUser";
 
-const socket = io("http://localhost:5001");
+const socket = io("https://meraki-academy-project-5-socket.onrender.com");
 
 const Map = () => {
   const online = useSelector((state) => state.auth.onlineUsers);
@@ -38,7 +38,7 @@ const Map = () => {
       if (userId === selectedUserId) {
         setRoomInvite(true);
         setRoomIdInput(room);
-        console.log("test for to ");
+        console.log("test for to ",room);
       }
     });
     socket.on("game-start", (roomIdInput) => {
@@ -48,7 +48,7 @@ const Map = () => {
     });
     const getCards = async () => {
       await axios
-        .get(`http://localhost:5000/card`)
+        .get(`https://backend-kxp7.onrender.com/card`)
         .then((res) => {
           dispatch(setCards(res.data));
         })
@@ -59,7 +59,7 @@ const Map = () => {
     const setUser = async () => {
       try {
         const result = await axios.get(
-          "http://localhost:5000/users/getAllUser"
+          "https://backend-kxp7.onrender.com/users/getAllUser"
         );
         if (result.data) {
           setUsers(result.data);
@@ -68,7 +68,7 @@ const Map = () => {
         console.error(error.message);
       }
     };
-    setUser();
+    
     getCards();
     return () => {
       socket.off("room-invite");
@@ -78,7 +78,7 @@ const Map = () => {
 
   // Function to get user information by ID
   const getUserInfo = (userId) => {
-    const user = users.find((user) => user.id === userId);
+    const user = users?.find((user) => user.id === userId);
     return user;
   };
 
@@ -100,6 +100,8 @@ const Map = () => {
   const handleJoinRoom = async (room) => {
     try {
       socket.emit("player-join", roomIdInput, selectedRoomId, userId);
+      console.log("rooms",roomIdInput);
+
       // navigate("/game");
     } catch (err) {
       console.log(err.message);

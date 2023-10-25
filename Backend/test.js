@@ -51,14 +51,15 @@ io.on("connection", (socket) => {
       );
     }
   });
+  let savedRoomIdInput = null;
 
   socket.on("player-join", async (roomIdInput, selectedRoomId, userId) => {
     try {
       console.log("player join", roomIdInput, userId, connectedPlayers);
       if (roomIdInput) {
         socket.join(roomIdInput);
+        savedRoomIdInput = roomIdInput;
 
-        console.log(roomIdInput);
         //until here work
         console.log(Object.keys(playRooms[roomIdInput]));
         if (Object.keys(playRooms[roomIdInput]).length === 2) {
@@ -75,7 +76,7 @@ io.on("connection", (socket) => {
   socket.on("player-ready", (userId) => {
     console.log("Received player-ready event for user ID:", userId);
 
-    const roomName = "room-24";
+    const roomName = savedRoomIdInput;
 
     if (playRooms.hasOwnProperty(roomName)) {
       const room = playRooms[roomName];
@@ -106,7 +107,7 @@ io.on("connection", (socket) => {
     try {
       console.log("card", player1);
       selectedCards.set(card1, player1);
-      const roomName = "room-24";
+      const roomName = savedRoomIdInput;
       const room = playRooms[roomName];
       let player2Data = null;
       if (room.player2 && room.player2 !== player1) {
@@ -121,7 +122,7 @@ io.on("connection", (socket) => {
     try {
       console.log("card", player2);
       selectedCards.set(card2, player2);
-      const roomName = "room-24";
+      const roomName = savedRoomIdInput;
       const room = playRooms[roomName];
       let player1Data = null;
       if (room.player1 && room.player1 !== player2) {
@@ -135,7 +136,7 @@ io.on("connection", (socket) => {
   socket.on("next-round", async (soketId) => {
     console.log("soketId", soketId);
 
-    const roomName = "room-24";
+    const roomName = savedRoomIdInput ;
     const room = playRooms[roomName];
     let player1Data = null;
     let player2Data = null;
@@ -206,7 +207,7 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("image-click", (url, soketId1, soketId2) => {
-    const roomName = "room-24";
+    const roomName = savedRoomIdInput;
     console.log("imog",playRooms,"s1",soketId1,"s2",soketId2);
     const room = playRooms[roomName];
 

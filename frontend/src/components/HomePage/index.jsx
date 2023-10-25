@@ -17,29 +17,45 @@ import {
   Grid,
   GridItem,
   Container,
+  Heading,
+  List,
+  ListItem,
+  Avatar,
+  Text,
+  VStack,
+  
+  Input,
 } from "@chakra-ui/react";
 import Notification from "../notificationx/index";
 import { setPosts } from "../redux/postSlicer/post";
 import { setUsers } from "../redux/authSlicer/auth";
+
 import io from "socket.io-client";
-const socket = io("http://localhost:5001");
+const socket = io("https://meraki-academy-project-5-socket.onrender.com");
 
 const HomePage = () => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const userInfo = useSelector((state) => state.auth.userInfo);
+  const userId = useSelector((state) => state.auth.userId);
   const posts = useSelector((state) => state.posts.posts);
   const token = useSelector((state) => state.auth.token);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [sendr, setSendr] = useState([]);
-  const btnRef = useRef();
+  const online = useSelector((state) => state.auth.onlineUsers);
+  const users = useSelector((state) => state.auth.users);
 
+  const btnRef = useRef();
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
-
+  const otherOnlineUsers = online.filter((user) => user !== userId);
+  const getUserInfo = (userId) => {
+    const user = users?.find((user) => user.id === userId);
+    return user;
+  };
   const onOpen = () => {
     setIsOpen(true);
   };
@@ -62,8 +78,8 @@ const HomePage = () => {
 
   const setUser = async () => {
     try {
-      const result = await axios.get("http://localhost:5000/users/getAllUser");
-      if (result.data) {
+      const result = await axios.get("https://backend-kxp7.onrender.com/users/getAllUser");
+      if (result) {
         setUsers(result.data);
       }
     } catch (error) {
@@ -73,7 +89,7 @@ const HomePage = () => {
 
   const getPosts = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/posts/`, config);
+      const res = await axios.get(`https://backend-kxp7.onrender.com/posts/`, config);
       const rever = res.data.result;
       dispatch(setPosts([...rever].reverse()));
     } catch (error) {
@@ -120,6 +136,20 @@ const HomePage = () => {
     const minutes = currentTime.getMinutes();
     return `${hours}:${minutes}`;
   };
+  const sendFriendsRequest = async (reqsTo) => {
+    try {
+      const response = await axios.post(`https://backend-kxp7.onrender.com/addFriends`, {
+        reqsFrom: userId,
+        reqsTo: reqsTo,
+      });
+console.log("work");
+      if (response.data.success) {
+        // console.log(response.data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <div>
@@ -127,12 +157,7 @@ const HomePage = () => {
       <Notification />
       <div className="HomePage-container">
         <div className="background-vido1">
-          <video autoPlay loop muted playsInline>
-            <source
-              src="https://res.cloudinary.com/dmhvb05w3/video/upload/v1696968750/adventure-skyscape-moewalls-com_fxmgd9.mp4"
-              type="video/mp4"
-            />
-          </video>
+         
         </div>
         <div className="message">
           <ul className="news__tab__list">
@@ -150,6 +175,31 @@ const HomePage = () => {
                   </div>
           </ul>
         </div>
+        <div className="onlineUsers">
+        <List>
+        {otherOnlineUsers?.map((selectedUserId) => {
+          const user = getUserInfo(selectedUserId);
+          return (
+            <ListItem
+              key={selectedUserId}
+              display="flex"
+              alignItems="center"
+              mb={2}
+              borderRadius="md"
+              color="black"
+              boxSize="100px"
+              onClick={() => sendFriendsRequest(selectedUserId)} // Make the whole ListItem clickable
+              style={{ cursor: "pointer" }} // Add a pointer cursor on hover
+            >
+              <VStack alignItems="center">
+                <Avatar src={user?.image} alt={user?.username} size="xl" />
+              </VStack>
+            </ListItem>
+          );
+        })}
+      </List>
+        </div>
+       
         <div className="chat">
 
           <div className="chat">
@@ -196,12 +246,7 @@ const HomePage = () => {
           </div>
         </div>
         <div className="background-vido2">
-          <video autoPlay loop muted playsInline>
-            <source
-              src="https://res.cloudinary.com/dmhvb05w3/video/upload/v1697005514/fantasy-traditional-temples-sakura-moewalls-com_fseoqb.mp4"
-              type="video/mp4"
-            />
-          </video>
+          
           <h1 className="posto">News</h1>
           <div className="posts">
             <ul className="news__tab__list">
@@ -288,7 +333,6 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        <Footer />
       </div>
     </div>
   );

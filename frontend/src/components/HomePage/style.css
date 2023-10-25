@@ -8,24 +8,35 @@
     justify-content: center;
     position: relative;
   }
+  .onlineUsers{
+    position: absolute;
+    top:100px;
+    left:10px
+  }
   .background-vido1{
-  position: absolute;
-  top: -130px;
-  left: 0;
-  width: 100%;
-  height: 100%;
+    background-image: url('https://res.cloudinary.com/dmhvb05w3/image/upload/v1698234487/Screenshot_4_nqkk9m.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 950px;
+    position: absolute;
+    top:-50px
    }
    .background-vido2{
-    position: absolute;
-    top: 930px;
-    left: 0;
+    background-image: url('https://res.cloudinary.com/dmhvb05w3/image/upload/v1698234651/Screenshot_5_ir64mr.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
     width: 100%;
-    height: 100%;
+    height: 950px;
+    position: absolute;
+    top:900px
    }
    
    .background-video3{
     position: absolute;
-    top:1990px
+    top:1850px
     
    }
 .noticaction {

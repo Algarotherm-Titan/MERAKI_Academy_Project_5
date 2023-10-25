@@ -75,7 +75,7 @@ const Character = () => {
 
   return (
     <div className="chBody">
-      <NavBar />
+       <NavBar />
       <div>
         <video className="main" autoPlay loop muted playsInline>
           <source

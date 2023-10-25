@@ -12,6 +12,8 @@
 .frienddiv .img{
     position: relative;
     left: -10px;
+    height: 100px;
+    width: 100px;
 }
 .frienddiv .removefrind{
     margin: 10px;
@@ -26,15 +28,29 @@
     display: grid;
     grid-template-columns: auto auto auto auto;
     position: relative;
-    left: -40px;
+    left: 40px;
 }
 .p{
     position: relative;
     left: 41px;
+    width: 300px;
+
+    font-size: 30px;
+    border: 1px solid   black;
+   border-radius: 25px;
+    text-align: center; 
+    background-color: rgba(255, 255, 255, 0.1);
+
 }
 
 .p2{
-    width: 190px;
+    font-size: 30px;
+    width: 300px;
+    border: 1px solid   black;
+    border-radius: 25px;
+     text-align: center; 
+     background-color: rgba(255, 255, 255, 0.1);
+
 }
 
 @media screen and (max-width: 769px){

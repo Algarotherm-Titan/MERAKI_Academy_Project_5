@@ -4,6 +4,7 @@ const initialState = {
   token: localStorage.getItem("token") || null,
   userId: localStorage.getItem("userId") || null,
   userInfo: JSON.parse(localStorage.getItem("userInfo")) || null,
+  userCards: JSON.parse(localStorage.getItem("userCards")) || null,
   isLogged: localStorage.getItem("token") ? true : false,
   email: "",
   password: "",
@@ -29,6 +30,10 @@ const authSlice = createSlice({
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
       localStorage.setItem("userInfo", JSON.stringify(action.payload));
+    },
+    setUsercards: (state, action) => {
+      state.userCards = action.payload;
+      localStorage.setItem("userCards", JSON.stringify(action.payload));
     },
     setUsers: (state, action) => {
       state.users = action.payload;
@@ -78,6 +83,7 @@ export const {
   setUserInfo,
   setUser_id,
   setToggleProf,
-  setOnlineUsers
+  setOnlineUsers,
+  setUsercards
 } = authSlice.actions;
 export default authSlice.reducer;

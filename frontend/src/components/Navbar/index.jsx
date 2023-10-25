@@ -9,7 +9,7 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import io from "socket.io-client";
-const socket = io("http://localhost:5001");
+const socket = io("https://meraki-academy-project-5-socket.onrender.com");
 
 const NavBar = ({ users, getUserByID, getPostsByUser }) => {
   const dispatch = useDispatch();
@@ -30,7 +30,7 @@ const NavBar = ({ users, getUserByID, getPostsByUser }) => {
 
   useEffect(() => {
     if (!isLogged) {
-      navigate("/");
+      navigate("/login");
     }
   }, [isLogged]);
 
@@ -40,7 +40,7 @@ const NavBar = ({ users, getUserByID, getPostsByUser }) => {
         <Navbar key={expand} expand={expand} id="id">
           <Container fluid>
             <Navbar.Brand href="#">
-              <img className="img" src={""} alt="" />
+              <img className="img" src={"https://res.cloudinary.com/dmhvb05w3/image/upload/v1697139315/download-removebg-preview_amtoid.png"} alt="" />
             </Navbar.Brand>
             <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
             <Navbar.Offcanvas
@@ -61,44 +61,44 @@ const NavBar = ({ users, getUserByID, getPostsByUser }) => {
               </Offcanvas.Header>
               <Offcanvas.Body>
                 <Nav className="justify-content-end flex-grow-1 pe-3">
-                  <Nav.Link href="/HomePage" className="font">
+                  <Link to="/HomePage" className="font">
                     HOME
-                  </Nav.Link>
+                  </Link>
 
-                  <Nav.Link href="/CHARACTER" className="font">
+                  <Link to="/CHARACTER" className="font">
                     CHARACTER
-                  </Nav.Link>
-                  <Nav.Link href="/News" className="font">
+                  </Link>
+                  <Link to="/News" className="font">
                     NEWS
-                  </Nav.Link>
-                  <Nav.Link href="" className="font">
+                  </Link>
+                  <Link to="" className="font">
                     TOP-UP
-                  </Nav.Link>
+                  </Link>
                   {userInfo?.role_id === 2 && (
-                    <Nav.Link className="font" href={"/Admin"}>
+                    <Link className="font" to="/Admin">
                       ADMIN
-                    </Nav.Link>
+                    </Link>
                   )}
-                  <Nav.Link
-                    href="/ProfilePage"
+                  <Link
+                    to="/ProfilePage"
                     className="font"
-                    onClick={() => {
-                      dispatch(setToggleProf(true));
-                      dispatch(setUser_id(userInfo?.id));
-                      getUserByID(userInfo?.id);
-                    }}
+                    // onClick={() => {
+                    //   dispatch(setToggleProf(true));
+                    //   dispatch(setUser_id(userInfo?.id));
+                    //   getUserByID(userInfo?.id);
+                    // }}
                   >
                     PROFILE
-                  </Nav.Link>
+                  </Link>
 
-                  <Nav.Link href="shop" className="font">
+                  <Link to="/shop" className="font">
                     SHOP
-                  </Nav.Link>
+                  </Link>
 
                   {isLogged ? (
-                    <Nav.Link onClick={handleLogout} className="logfont">
+                    <Link onClick={handleLogout} className="logfont">
                       Logout
-                    </Nav.Link>
+                    </Link>
                   ) : (
                     ""
                   )}
