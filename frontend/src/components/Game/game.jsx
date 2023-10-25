@@ -49,6 +49,7 @@ const Game = () => {
   const users = useSelector((state) => state.auth.users);
   const cards = useSelector((state) => state.cards.cards);
   const userCard = useSelector((state) => state.auth.userCards);
+  const roomId = useSelector((state) => state.cards.roomId);
 
   const navigate = useNavigate();
   const emoi = [
@@ -68,7 +69,7 @@ const Game = () => {
     if (!isButtonDisabled) {
       setIsReady(!isReady);
       setIsButtonDisabled(true);
-      socket.emit("player-ready", userId);
+      socket.emit("player-ready", userId,roomId);
     }
   };
   const toggleReady2 = () => {
@@ -77,10 +78,10 @@ const Game = () => {
       setIsRoundEnded(false);
       console.log("test");
       if (soketId1) {
-        socket.emit("next-round", soketId1);
+        socket.emit("next-round", soketId1,roomId);
       }
       if (soketId2) {
-        socket.emit("next-round", soketId2);
+        socket.emit("next-round", soketId2,roomId );
       }
     }
   };
@@ -258,7 +259,7 @@ const Game = () => {
           setSelectedCards([...selectedCards, card]);
           removeCardFromHand(card);
           setIsCardSelectionAllowed(false);
-          socket.emit("select-card1", card, soketId1);
+          socket.emit("select-card1", card, soketId1,roomId);
         }
       } else if (player2 === userId && currentRound % 2 === 0) {
         if (!clickedCards.includes(card)) {
@@ -266,7 +267,7 @@ const Game = () => {
           setSelectedCards([...selectedCards, card]);
           removeCardFromHand(card);
           setIsCardSelectionAllowed(false);
-          socket.emit("select-card2", card, soketId2);
+          socket.emit("select-card2", card, soketId2,roomId);
         }
       }
     }
@@ -280,7 +281,7 @@ const Game = () => {
 
   const handleImageClick = (url) => {
     console.log("Image clicked", url);
-    socket.emit("image-click", url, soketId1, soketId2);
+    socket.emit("image-click", url, soketId1, soketId2,roomId);
   };
   const AttackCardStyle = {
     border: "2px solid lightblue",
