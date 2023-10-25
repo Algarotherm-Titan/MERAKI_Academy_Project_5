@@ -6,7 +6,7 @@ import { SpinnerIcon, ArrowLeftIcon, WarningIcon } from "@chakra-ui/icons";
 import { Box, Flex, Avatar, HStack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-const socket = io("http://localhost:5001");
+const socket = io("https://meraki-academy-project-5-socket.onrender.com");
 
 const GameNavbar = () => {
   const userId = useSelector((state) => state.auth.userId);

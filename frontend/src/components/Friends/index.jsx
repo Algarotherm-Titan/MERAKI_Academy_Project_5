@@ -39,7 +39,7 @@ const Friends = () => {
     try {
       // console.log("Before axios request");
       const response = await axios.get(
-        `http://localhost:5000/userFriends/${userId}`
+        `https://backend-kxp7.onrender.com/userFriends/${userId}`
       );
       // console.log("After axios request", response.data.userFriends);
       if (response.status === 200) {
@@ -53,7 +53,7 @@ const Friends = () => {
   const friendsRequest = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/userRequest/${userId}`
+        `https://backend-kxp7.onrender.com/userRequest/${userId}`
       );
       // console.log("req1", response);
       if (response.status === 200) {
@@ -67,7 +67,7 @@ const Friends = () => {
   const removeFriend = async (friendId) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/deleteFriends?friendId=${friendId}&userId=${userId}`
+        `https://backend-kxp7.onrender.com/deleteFriends?friendId=${friendId}&userId=${userId}`
       );
       if (response.data.success) {
         console.log(response);
@@ -80,7 +80,7 @@ const Friends = () => {
     try {
       const reqsTo = userId;
       const response = await axios.put(
-        "http://localhost:5000/updateFriendRequest",
+        "https://backend-kxp7.onrender.com/updateFriendRequest",
         {
           reqsFrom: reqsFrom,
           reqsTo: reqsTo,
@@ -100,15 +100,14 @@ const Friends = () => {
   return (
 
     <div>
-      {/*  friend list */}
 
       <div className="frienddiv">
-      <p className="p">friends</p>
+      <p className="p">Friends</p>
         <Center>
          
-          <Box className="inside">
+          <Box className="inside" gap={5}>
             {friends.map((friend) => (
-              <Box key={friend.friend_id}>   
+              <Box key={friend.friend_id} >   
                 <Flex>
                   <Avatar src={friend.friend_image} className="img"/>
                 </Flex>
@@ -125,16 +124,15 @@ const Friends = () => {
           </Box>
         </Center>
       </div>
-      {/* friend list */}
 
       <UnorderedList listStyleType="none">
-      <p className="p2">friend request</p>
+      <p className="p2">Friend Request</p>
     {pendingRequests.map((request) => (
       <ListItem key={request.id} borderBottom="1px solid #ccc" py={3} display="flex" alignItems="center" className="test">
-        <Box marginRight="20px">
-          <Image src={request.image} alt="image" boxSize="50px" borderRadius="50%" />
+        <Box marginRight="0px">
+          <Image src={request.image} alt="image" boxSize="100px" borderRadius="50%" />
         </Box>
-        <Text flex="1">{request.username}</Text>
+        <Heading  flex="1">{request.username}</Heading>
         <Button
           className="reqbtn"
           colorScheme="blue"

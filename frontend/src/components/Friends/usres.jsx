@@ -23,7 +23,7 @@ const Users = () => {
   
   const sendFriendsRequest = async (reqsTo) => {
     try {
-      const response = await axios.post(`http://localhost:5000/addFriends`, {
+      const response = await axios.post(`https://backend-kxp7.onrender.com/addFriends`, {
         reqsFrom: userId,
         reqsTo: reqsTo,
       });

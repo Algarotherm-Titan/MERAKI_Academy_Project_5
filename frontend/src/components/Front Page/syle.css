@@ -13,11 +13,32 @@
   left: 0;
   
  } 
+ .background-image{
+  background-image: url('https://res.cloudinary.com/dmhvb05w3/image/upload/v1698233315/Screenshot_3_wt1nij.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 100%;
+  height: 1000px;
+  position: absolute;
+  top:0px
+ }
  .background-2{
   position: absolute;
   top: 990px;
   width: 100%;
   left:0px;
+ }
+ .visible_ {
+  background-image: url('https://res.cloudinary.com/dmhvb05w3/image/upload/v1698232741/Screenshot_2_zzev77.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 100%;
+  height: 1000px;
+
+  position: absolute;
+  top:10px
  }
  .background-2 h1 {
   width: 500px;
@@ -26,7 +47,7 @@
   left: 660px;
   text-align: center;
   border-radius: 15px;
-top:200px;
+top:100px;
 margin: 0;
 border-block-end-color: rgb(196, 185, 152);
 border-block-start-color: rgb(196, 185, 152);
@@ -57,13 +78,13 @@ transition-duration: 0.6s;
 -webkit-text-fill-color: rgb(196, 185, 152);
 -webkit-text-stroke-color: rgb(196, 185, 152);
 }
-.background-2 img{
-  width: 100px;
-  height: 110px;
+.background-2 .icon_23Iu{
+  width: 90px;
+  height: 90px;
   position: absolute;
   left: 870px;
   text-align: center;
-  top:50px
+  top:0%
 
 }
 
@@ -333,7 +354,7 @@ transition-duration: 0.6s;
   gap: 10px; 
 position: absolute;
   left:350px;
-  top:1200px
+  top:100px
 }
 
 .charcter > div {
@@ -401,7 +422,7 @@ position: absolute;
   text-align: center;
  position: absolute;
   height: 300px;
-  top:1500px;
+  top:500px;
   left:100px
   
 }

@@ -9,12 +9,13 @@ import {
   setPassword,
   setUserInfo,
   setOnlineUsers,
+  setUsercards
 } from "../redux/authSlicer/auth";
 
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import io from "socket.io-client";
-const socket = io("http://localhost:5001");
+const socket = io("https://meraki-academy-project-5-socket.onrender.com");
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -34,10 +35,11 @@ const Login = () => {
     });
   }, []);
 
+  
   const login = async (e) => {
     e.preventDefault();
     try {
-      const result = await axios.post("http://localhost:5000/users/login", {
+      const result = await axios.post("https://backend-kxp7.onrender.com/users/login", {
         email,
         password,
       });
@@ -47,12 +49,13 @@ const Login = () => {
         dispatch(setLogin(result.data.token));
         dispatch(setUserId(result.data.userId));
         dispatch(setUserInfo(result.data.user));
+        dispatch(setUsercards(result.data.userCards));
+
         const loggedInUserId = result.data.userId;
 
-        console.log(loggedInUserId);
+        console.log(result);
         socket.emit("user-login", loggedInUserId);
         navigate("/Homepage");
-        setUser();
       } else {
         throw new Error("Login failed");
       }
@@ -74,7 +77,7 @@ const Login = () => {
   return (
     <form class="form_container">
       <div class="logo_container">
-        <img src={""} />
+        <img src={"https://res.cloudinary.com/dmhvb05w3/image/upload/v1697139315/download-removebg-preview_amtoid.png"} />
       </div>
       <div class="title_container">
         <p class="title">Login to your Account</p>

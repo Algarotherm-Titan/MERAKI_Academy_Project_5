@@ -48,16 +48,16 @@ const Admin = () => {
   };
   if (userInfo && userInfo.role_id === 2) {
     return (
-      <>
-      <AddPost/>
-        <NavBar />
+      <div>
+       <NavBar />
         <Box>
-          <Container maxW="100%" marginTop={"70px"}>
-            <Grid templateColumns={{ sm: "1fr", md: "1fr 1fr" }} gap={4}>
+          <Container maxW="100%" marginTop={"0px"}>
+            <Grid templateColumns={{ sm: "1fr", md: "1fr 1fr 1fr" }} gap={4}>
               <GridItem>
                 <Stack
                   borderWidth="1px"
                   borderRadius="lg"
+                  marginTop={"150px"}
                   w={{ sm: "10px", md: "300px" }}
                   height={{ sm: "400px", md: "700px" }}
                   direction={{ base: "column", md: "row" }}
@@ -72,14 +72,27 @@ const Admin = () => {
                     alt="#"
                   />
                   <Text fontWeight={600} color={"black.500"} size="sm" mb={1}>
-                    {userInfo.username}
                   </Text>
                 </Stack>
               </GridItem>
+              <Stack
+                  borderWidth="1px"
+                  borderRadius="lg"
+                  marginTop={"150px"}
+                  w={{ md: "550px" }}
+                  direction="column"
+                  bg={useColorModeValue("white", "gray.900")}
+                  boxShadow="2xl"
+                  padding={0}
+                >
+                  <AddPost/>
+                                  </Stack>
+
               <GridItem colSpan={{ sm: 1, md: 1 }}>
                 <Stack
                   borderWidth="1px"
                   borderRadius="lg"
+                  marginTop={"150px"}
                   w={{ sm: "100%", md: "300px" }}
                   minH={{ sm: "400px", md: "700px" }}
                   direction="column"
@@ -117,12 +130,14 @@ const Admin = () => {
                   <Button onClick={data} colorScheme="blue" size="md" w="100%">
                     Update User
                   </Button>
+                  
                 </Stack>
+
               </GridItem>
             </Grid>
           </Container>
         </Box>
-      </>
+      </div>
     );
   }
 };

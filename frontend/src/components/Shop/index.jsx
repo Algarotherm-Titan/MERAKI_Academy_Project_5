@@ -67,7 +67,7 @@ const Shope = () => {
   const buyCommenCard = async (price) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/card/getRandomCards",
+        "https://backend-kxp7.onrender.com/card/getRandomCards",
         {
           lootPrice: price,
           userId,
@@ -81,7 +81,7 @@ const Shope = () => {
 
   const setUser = async () => {
     try {
-      const result = await axios.get("http://localhost:5000/users/getAllUser");
+      const result = await axios.get("https://backend-kxp7.onrender.com/users/getAllUser");
       if (result.data) {
         setUsers(result.data);
       }
@@ -158,7 +158,9 @@ const Shope = () => {
   };
 
   return (
+    
     <div className="shopC">
+      <NavBar />
       <div className="overlay">
         <video
           className="video"
@@ -167,7 +169,7 @@ const Shope = () => {
           loop
           muted
         ></video>
-        <NavBar />
+        
         <div className={`subNav ${scrolled ? "scrolled" : ""}`}>
           <button className="btnSub" onClick={() => navigate("/shop")}>
             FEATURED

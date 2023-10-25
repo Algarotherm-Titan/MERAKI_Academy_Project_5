@@ -12,7 +12,7 @@ import { Button } from "@chakra-ui/react";
 import GameNavbar from "./onlineUser";
 import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
-const socket = io("http://localhost:5001");
+const socket = io("https://meraki-academy-project-5-socket.onrender.com");
 import NavBar from "../Navbar";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
@@ -48,7 +48,8 @@ const Game = () => {
   const userId = useSelector((state) => state.auth.userId);
   const users = useSelector((state) => state.auth.users);
   const cards = useSelector((state) => state.cards.cards);
-  const userInfo = users.find((user) => user.id === userId) || {};
+  const userCard = useSelector((state) => state.auth.userCards);
+
   const navigate = useNavigate();
   const emoi = [
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEqqU7XZHsOKyFF96sXq21J8Z57OrLf9iBBLkIoLWjlRUFkw1yTw7QnWyCv3WtZAIZLsg&usqp=CAU",
@@ -57,8 +58,8 @@ const Game = () => {
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0cYoXdpH67sXfAqNzhEixhIQAsX5D9VKtpQ&usqp=CAU",
     "data:image/jpeg;base64,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",
   ];
-  const userCardIds = userInfo.user_cards
-    ? userInfo.user_cards.map((userCard) => userCard.card_id)
+  const userCardIds = userCard
+    ? userCard.map((userCard) => userCard.card_id)
     : [];
 
   const UserCards = cards?.filter((card) => userCardIds.includes(card.card_id));
@@ -127,10 +128,7 @@ const Game = () => {
       setPlayer2HP(20);
       setPlayer1HP(20);
     });
-    if (userId === player1 && currentRound === 1) {
-      setPlayerHand([...playerHand, getRandomCardNotInHand()]);
-      console.log("work");
-    }
+
     socket.on("card-selected1", (card) => {
       setEnamyCard([...enamyCard, card]);
     });
@@ -206,7 +204,13 @@ const Game = () => {
         console.log("pver");
       }, 3000);
     });
-
+    if (attackCards.length === 2) {
+      selectedCardsForAttacks();
+    }
+    if (userId === player1 && currentRound === 1) {
+      setPlayerHand([...playerHand, getRandomCardNotInHand()]);
+      console.log("work");
+    }
     return () => {
       socket.off("game-started");
       socket.off("receive-cards");
@@ -266,23 +270,29 @@ const Game = () => {
       }
     }
   };
-  const selectedCardsForAttacks = (card) => {
-    setAttackCards([...attackCards, card]);
-    if (attackCards.length === 2) {
-      const [firstCard, secondCard] = attackCards;
-      console.log("Attack with:", firstCard, secondCard);
-      socket.emit("attack", firstCard, secondCard);
-      setAttackCards([]);
-    }
+  const selectedCardsForAttacks = () => {
+    const [firstCard, secondCard] = attackCards;
+    console.log("Attack with:", firstCard, secondCard);
+    socket.emit("attack", firstCard, secondCard);
+    setAttackCards([]);
   };
+
   const handleImageClick = (url) => {
     console.log("Image clicked", url);
     socket.emit("image-click", url, soketId1, soketId2);
   };
+  const AttackCardStyle = {
+    border: "2px solid lightblue",
+  };
+
   return (
-
-    <Box w="100%" h="100%" style={{ backgroundImage: `url('https://static.invenglobal.com/upload/image/2020/01/22/i1579710522631687.png')` }}>
-
+    <Box
+      w="100%"
+      h="100%"
+      style={{
+        backgroundImage: `url('https://static.invenglobal.com/upload/image/2020/01/22/i1579710522631687.png')`,
+      }}
+    >
       <GameNavbar />
       <div> {gameEndmessage}</div>
       <Grid>
@@ -350,21 +360,23 @@ const Game = () => {
           {enamyCard?.map((card) => (
             <Box
               key={card.card_id}
-              onClick={() => selectedCardsForAttacks(card)}
+              onClick={() => {
+                if (attackCards.length < 2 && !attackCards.includes(card)) {
+                  setAttackCards([...attackCards, card]);
+                }
+              }}
               style={{
                 cursor: "pointer",
                 padding: "10px",
-                border: "1px solid #ccc",
+                border: attackCards.includes(card)
+                  ? AttackCardStyle.border
+                  : "1px solid #ccc",
                 borderRadius: "5px",
                 textAlign: "center",
-              
-
               }}
             >
-
               <Image src={card?.card_image} maxW="150px" maxH="150px" />
-              <Text fontSize="lg" fontWeight="bold" mt={2}  color='#F0F8FF'>
-
+              <Text fontSize="lg" fontWeight="bold" mt={2} color="#F0F8FF">
                 {card.attack}
               </Text>
             </Box>
@@ -379,11 +391,17 @@ const Game = () => {
           {selectedCards?.map((card) => (
             <Box
               key={card.card_id}
-              onClick={() => selectedCardsForAttacks(card)}
+              onClick={() => {
+                if (attackCards.length < 2 && !attackCards.includes(card)) {
+                  setAttackCards([...attackCards, card]);
+                }
+              }}
               style={{
                 cursor: "pointer",
                 padding: "10px",
-                border: "1px solid #ccc",
+                border: attackCards.includes(card)
+                  ? AttackCardStyle.border
+                  : "1px solid #ccc",
                 borderRadius: "5px",
                 textAlign: "center",
               }}
@@ -391,7 +409,8 @@ const Game = () => {
               <Image
                 src={card.card_image}
                 alt={card.card_name}
-               maxW="150px" maxH="150px"
+                maxW="150px"
+                maxH="150px"
               />
               <Text fontSize="lg" fontWeight="bold" mt={2} color="#F0F8FF">
                 {card.attack}
@@ -419,10 +438,8 @@ const Game = () => {
                 textAlign: "center",
               }}
             >
-
-              <Image src={card && card.card_image}  maxW="150px" maxH="150px" />
-              <Text fontSize="lg" fontWeight="bold" mt={2}  color='#F0F8FF'>
-
+              <Image src={card && card.card_image} maxW="150px" maxH="150px" />
+              <Text fontSize="lg" fontWeight="bold" mt={2} color="#F0F8FF">
                 {card && card.attack}
               </Text>
             </Box>

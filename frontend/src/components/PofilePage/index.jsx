@@ -2,21 +2,28 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import "./style.css";
 import NavBar from "../Navbar";
-import { setPosts } from "../redux/postSlicer/post";
 import Friends from "../Friends";
-import { FaCog as SettingsIcon } from 'react-icons/fa';
+import { FaCog as SettingsIcon } from "react-icons/fa";
+import axios from "axios";
+import { setCards } from "../redux/cardSlicer/card";
+import { Grid, GridItem, Image, Box } from "@chakra-ui/react";
 
 const ProfilePage = () => {
-  const [userPorfile, setUserPorfile] = useState({});
-  const user_id = useSelector((state) => state.auth.user_id);
-  const isLogged = useSelector((state) => state.auth.isLogged);
-  const dispatch = useDispatch();
   const [div1Visible, setDiv1Visible] = useState(false);
   const [div2Visible, setDiv2Visible] = useState(false);
   const [div3Visible, setDiv3Visible] = useState(false);
+  const dispatch = useDispatch();
+
+  const cards = useSelector((state) => state.cards.cards);
+  const userCard = useSelector((state) => state.auth.userCards);
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  const userCardIds = userCard
+    ? userCard.map((userCard) => userCard.card_id)
+    : [];
+
+  const UserCards = cards?.filter((card) => userCardIds.includes(card.card_id));
 
   const toggleDiv1 = () => {
     setDiv1Visible(!div1Visible);
@@ -35,43 +42,24 @@ const ProfilePage = () => {
     setDiv2Visible(false);
     setDiv1Visible(false);
   };
-
+  const getCards = async () => {
+    await axios
+      .get(`https://backend-kxp7.onrender.com/card`)
+      .then((res) => {
+        dispatch(setCards(res.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   useEffect(() => {
-    getUserByID(user_id);
-    getPostsByUser(user_id);
-    if (!isLogged) {
-      navigate("/login");
-    }
+    getCards();
+    console.log(UserCards);
   }, []);
-
-  const getUserByID = async (id) => {
-    await axios
-      .get(`http://localhost:5000/users/${id}`)
-      .then((res) => {
-        setUserPorfile(res.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const getPostsByUser = async (id) => {
-    await axios
-      .get(`http://localhost:5000/posts/search_1/${id}`)
-      .then((res) => {
-        const rever = res.data.result;
-        dispatch(setPosts([...rever].reverse()));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   return (
     <>
+      <NavBar />
       <div className="backg">
-        <NavBar getUserByID={getUserByID} getPostsByUser={getPostsByUser} />
-
         <div class="grid-container">
           <div className="div1">
             <div className="cover-photo">
@@ -81,11 +69,11 @@ const ProfilePage = () => {
               />
             </div>
             <div className="profile-picture">
-              <img src={userPorfile.image} alt="Profile Picture" />
+              <img src={userInfo.image} alt="Profile Picture" />
             </div>
             <div class="spinner">
               <span>
-                <h1 className="h1s">{userPorfile.username}</h1>
+                <h1 className="h1s">{userInfo.username}</h1>
               </span>
             </div>
             <div>
@@ -113,8 +101,8 @@ const ProfilePage = () => {
           <div className="div2">
             <Link to="/EditePage">
               <button className="setting">
-              <SettingsIcon/>            
-                  </button>
+                <SettingsIcon />
+              </button>
             </Link>
 
             {div1Visible && (
@@ -124,7 +112,7 @@ const ProfilePage = () => {
             )}
 
             {div2Visible && (
-              <div>
+              <div className="div2Friend">
                 <Friends />
               </div>
             )}
@@ -133,38 +121,18 @@ const ProfilePage = () => {
               <div>
                 <h1 className="center">MY CARDS</h1>
                 <div class="grid-container2">
-                  <div class="grid-item2">
-                    <img
-                      className="cardimg"
-                      src="https://preview.redd.it/3a2o0icg8kb71.jpg?width=804&format=pjpg&auto=webp&s=495afc99324f4f1ca8134a36922d7399e33db579"
-                      alt=""
-                    />{" "}
-                    <p className="cardname">MISS FOTUNE</p>
-                  </div>
-                  <div class="grid-item2">
-                    <img
-                      className="cardimg"
-                      src="https://preview.redd.it/appzgu0tju461.jpg?width=804&format=pjpg&auto=webp&s=188672e8bf14702501ecfa114aa5e3b3e9bfef40"
-                      alt=""
-                    />{" "}
-                    <p className="cardname">MISS FOTUNE</p>
-                  </div>
-                  <div class="grid-item2">
-                    <img
-                      className="cardimg"
-                      src="https://preview.redd.it/nyepm6cu8kb71.jpg?width=804&format=pjpg&auto=webp&s=189d29803240f14ce495ef29f9f4b4f17030fdc4"
-                      alt=""
-                    />{" "}
-                    <p className="cardname">GAREN</p>
-                  </div>
-                  <div class="grid-item2">
-                    <img
-                      className="cardimg"
-                      src="https://preview.redd.it/etf5tir5lu461.jpg?width=804&format=pjpg&auto=webp&s=3a6371f648ee29f8ea3a680ae2a0446c56d5ff80"
-                      alt=""
-                    />{" "}
-                    <p className="cardname">GANGPLANK</p>
-                  </div>
+                  <Grid templateColumns="repeat(10, 1fr)" gap={3} p="100px">
+                  {UserCards?.slice(0, 40).map((card) => (
+                      <GridItem
+                        key={card.card_id}
+                        style={{ position: "relative", top: "15%" }}
+                      >
+                        <Box>
+                          <Image src={card.card_image} alt={card.card_name} />
+                        </Box>
+                      </GridItem>
+                    ))}
+                  </Grid>
                 </div>
               </div>
             )}
