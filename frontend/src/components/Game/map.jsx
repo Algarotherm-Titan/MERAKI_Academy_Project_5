@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setCards } from "../redux/cardSlicer/card";
 import { setUsers } from "../redux/authSlicer/auth";
+import { setRoomId } from "../redux/cardSlicer/card";
 import io from "socket.io-client";
 import {
   Box,
@@ -44,6 +45,7 @@ const Map = () => {
     socket.on("game-start", (roomIdInput) => {
       console.log("players-ready to fight ", roomIdInput);
       console.log("test", roomIdInput);
+      dispatch(setRoomId(roomIdInput));
       navigate("/game");
     });
     const getCards = async () => {
