@@ -1,4 +1,3 @@
-
 const { Server } = require("socket.io");
 // const server = http.createServer(app);
 const io = new Server(5001, { cors: { origin: "*" } });
@@ -51,16 +50,17 @@ io.on("connection", (socket) => {
       );
     }
   });
- 
-  const savedRoomIdInput = new Set();
+
+  let savedRoomIdInput = null;
   socket.on("player-join", async (roomIdInput, selectedRoomId, userId) => {
     try {
       console.log("player join", roomIdInput, userId, connectedPlayers);
       if (roomIdInput) {
         socket.join(roomIdInput);
-        savedRoomIdInput.clear();
-        savedRoomIdInput.set(roomIdInput);
 
+        savedRoomIdInput = roomIdInput;
+        console.log("savedRoomIdInput:",savedRoomIdInput);
+        
         //until here work
         console.log(Object.keys(playRooms[roomIdInput]));
         if (Object.keys(playRooms[roomIdInput]).length === 2) {
@@ -78,7 +78,7 @@ io.on("connection", (socket) => {
     console.log("Received player-ready event for user ID:", userId);
 
     const roomName = savedRoomIdInput;
-
+    console.log("roomName:",roomName);
     if (playRooms.hasOwnProperty(roomName)) {
       const room = playRooms[roomName];
       console.log("room work");
@@ -101,8 +101,6 @@ io.on("connection", (socket) => {
       io.to(room.player2).emit("you-two", room.player2);
     }
   });
-
-
 
   socket.on("select-card1", async (card1, player1) => {
     try {
@@ -137,7 +135,7 @@ io.on("connection", (socket) => {
   socket.on("next-round", async (soketId) => {
     console.log("soketId", soketId);
 
-    const roomName = savedRoomIdInput ;
+    const roomName = savedRoomIdInput;
     const room = playRooms[roomName];
     let player1Data = null;
     let player2Data = null;
@@ -209,7 +207,7 @@ io.on("connection", (socket) => {
   });
   socket.on("image-click", (url, soketId1, soketId2) => {
     const roomName = savedRoomIdInput;
-    console.log("imog",playRooms,"s1",soketId1,"s2",soketId2);
+    console.log("imog", playRooms, "s1", soketId1, "s2", soketId2);
     const room = playRooms[roomName];
 
     if (room.player1 && room.player1 === soketId1) {
@@ -218,19 +216,16 @@ io.on("connection", (socket) => {
     } else {
       io.to(room.player1).emit("get-imoj", url);
       console.log("we work here2 ");
-
     }
   });
 
-  socket.on('chatMessage', (message,sender) => {
-    console.log(message,sender);
-    io.emit('chatMessage', message,sender);
+  socket.on("chatMessage", (message, sender) => {
+    console.log(message, sender);
+    io.emit("chatMessage", message, sender);
   });
-
 
   // Handle disconnection
   socket.on("disconnect", () => {
-
     console.log("A user disconnected");
   });
 });
