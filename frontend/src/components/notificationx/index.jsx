@@ -12,7 +12,7 @@ const Notification = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/notif");
+        const response = await axios.get("https://backend-kxp7.onrender.com/notif");
         if (response && response.data) {
           setNotifications(response.data.result);
         }

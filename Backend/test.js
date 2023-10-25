@@ -5,7 +5,6 @@ const io = new Server(5001, { cors: { origin: "*" } });
 const connectedPlayers = new Map();
 
 const connectedUsers = new Set(); //Set
-const savedRoomIdInput = new Set();
 
 const selectedCards = new Map();
 const playRooms = {};
@@ -24,6 +23,7 @@ io.on("connection", (socket) => {
     io.emit("online-users", Array.from(connectedUsers));
     console.log("User disconnected:", userId);
   });
+  let savedRoomIdInput = null;
 
   socket.on("user-selected", ({ selectedUserId, roomId, userId }) => {
     console.log("User_selected", selectedUserId, roomId);
@@ -34,9 +34,8 @@ io.on("connection", (socket) => {
       console.log(playRooms[room]);
 
       socket.join(room);
-      connectedUsers.clear();
-      savedRoomIdInput.add(room)
-      
+      savedRoomIdInput=room
+
       const selectedUserSocketId = connectedPlayers.get(selectedUserId);
       if (selectedUserSocketId) {
         // io.to(selectedUserSocketId).emit("room-invite", selectedUserId,room);
@@ -53,7 +52,6 @@ io.on("connection", (socket) => {
       );
     }
   });
-
 
   socket.on("player-join", async (roomIdInput, selectedRoomId, userId) => {
     try {
@@ -75,12 +73,11 @@ io.on("connection", (socket) => {
       console.error("Error while handling player join:", error);
     }
   });
-  const firstValue = [...savedRoomIdInput.values()][0]
 
   socket.on("player-ready", (userId) => {
     console.log("Received player-ready event for user ID:", userId);
 
-    const roomName = firstValue;
+    const roomName = savedRoomIdInput;
     console.log("roomName:",roomName);
     if (playRooms.hasOwnProperty(roomName)) {
       const room = playRooms[roomName];
@@ -109,7 +106,7 @@ io.on("connection", (socket) => {
     try {
       console.log("card", player1);
       selectedCards.set(card1, player1);
-      const roomName = firstValue;
+      const roomName = savedRoomIdInput;
       const room = playRooms[roomName];
       let player2Data = null;
       if (room.player2 && room.player2 !== player1) {
@@ -124,7 +121,7 @@ io.on("connection", (socket) => {
     try {
       console.log("card", player2);
       selectedCards.set(card2, player2);
-      const roomName = firstValue;
+      const roomName = savedRoomIdInput;
       const room = playRooms[roomName];
       let player1Data = null;
       if (room.player1 && room.player1 !== player2) {
@@ -138,7 +135,7 @@ io.on("connection", (socket) => {
   socket.on("next-round", async (soketId) => {
     console.log("soketId", soketId);
 
-    const roomName = firstValue;
+    const roomName = savedRoomIdInput;
     const room = playRooms[roomName];
     let player1Data = null;
     let player2Data = null;
@@ -209,7 +206,7 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("image-click", (url, soketId1, soketId2) => {
-    const roomName = firstValue;
+    const roomName = savedRoomIdInput;
     console.log("imog", playRooms, "s1", soketId1, "s2", soketId2);
     const room = playRooms[roomName];
 
