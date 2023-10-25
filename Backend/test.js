@@ -203,7 +203,7 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("image-click", (url, soketId1, soketId2,roomId) => {
-    const roomName = savedRoomIdInput;
+    const roomName = roomId;
     console.log("imog", playRooms, "s1", soketId1, "s2", soketId2);
     const room = playRooms[roomName];
 
