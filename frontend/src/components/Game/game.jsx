@@ -121,6 +121,7 @@ const Game = () => {
       setPlayer1(userId);
       setPlayer1HP(20);
       setPlayer2HP(20);
+      console.log("22");
     });
     socket.on("you-two", (data) => {
       setSocletId2(data);

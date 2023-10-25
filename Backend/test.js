@@ -51,14 +51,15 @@ io.on("connection", (socket) => {
       );
     }
   });
-  let savedRoomIdInput = null;
-
+ 
+  const savedRoomIdInput = new Set();
   socket.on("player-join", async (roomIdInput, selectedRoomId, userId) => {
     try {
       console.log("player join", roomIdInput, userId, connectedPlayers);
       if (roomIdInput) {
         socket.join(roomIdInput);
-        savedRoomIdInput = roomIdInput;
+        savedRoomIdInput.clear();
+        savedRoomIdInput.set(roomIdInput);
 
         //until here work
         console.log(Object.keys(playRooms[roomIdInput]));
