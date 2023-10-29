@@ -1,6 +1,5 @@
 const { pool } = require("../models/db");
 const axios = require("axios");
-const cardData = require("../set1-en_us");
 const addCardsFromApi = (req, res) => {
   const api_url =
     "https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=metal%20raiders&attribute=dark";
