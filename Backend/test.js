@@ -24,13 +24,21 @@ io.on("connection", (socket) => {
     console.log("User disconnected:", userId);
   });
 
-  socket.on("user-selected", ({ selectedUserId, roomId, userId }) => {
-    console.log("User_selected", selectedUserId, roomId,userId);
+  socket.on("chat-Message", (chats, userToChat, userId) => {
+    console.log(chats, userToChat, userId);
+    
+    const sender = connectedPlayers.get(userId);
+    const receiver = connectedPlayers.get(userToChat);
+    io.emit("chat-Message", chats,userToChat, userId); 
+
+  });
+
+  socket.on("user-selected", ({ selectedUserId, roomId, userId,username }) => {
+    console.log("User_selected", selectedUserId, roomId, userId,username);
 
     try {
       const room = "room-" + selectedUserId + userId;
       playRooms[room] = { player1: "", player2: "" };
-      console.log(playRooms[room]);
 
       socket.join(room);
 
@@ -38,8 +46,7 @@ io.on("connection", (socket) => {
       if (selectedUserSocketId) {
         // io.to(selectedUserSocketId).emit("room-invite", selectedUserId,room);
 
-        io.emit("room-invite", selectedUserId, room,userId);
-        console.log("my work here over");
+        io.emit("room-invite", selectedUserId, room, username);
       } else {
         console.error("Selected user is not connected:", selectedUserId);
       }
@@ -53,10 +60,9 @@ io.on("connection", (socket) => {
 
   socket.on("player-join", async (roomIdInput, selectedRoomId, userId) => {
     try {
-      console.log("player join", roomIdInput, userId, connectedPlayers);
       if (roomIdInput) {
         socket.join(roomIdInput);
-        
+
         //until here work
         console.log(Object.keys(playRooms[roomIdInput]));
         if (Object.keys(playRooms[roomIdInput]).length === 2) {
@@ -71,11 +77,10 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("player-ready", (userId,roomId) => {
-    console.log("Received player-ready event for user ID:", userId);
+  socket.on("player-ready", (userId, roomId) => {
 
     const roomName = roomId;
-    console.log("roomName:",roomName);
+    console.log("roomName:", roomName);
     if (playRooms.hasOwnProperty(roomName)) {
       const room = playRooms[roomName];
       console.log("room work");
@@ -99,9 +104,8 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("select-card1", async (card1, player1,roomId) => {
+  socket.on("select-card1", async (card1, player1, roomId) => {
     try {
-      console.log("card", player1);
       selectedCards.set(card1, player1);
       const roomName = roomId;
       const room = playRooms[roomName];
@@ -114,9 +118,8 @@ io.on("connection", (socket) => {
       console.log(err.message);
     }
   });
-  socket.on("select-card2", async (card2, player2,roomId) => {
+  socket.on("select-card2", async (card2, player2, roomId) => {
     try {
-      console.log("card", player2);
       selectedCards.set(card2, player2);
       const roomName = roomId;
       const room = playRooms[roomName];
@@ -129,8 +132,7 @@ io.on("connection", (socket) => {
       console.log(err.message);
     }
   });
-  socket.on("next-round", async(soketId,roomId) => {
-    console.log("soketId", soketId);
+  socket.on("next-round", async (soketId, roomId) => {
 
     const roomName = roomId;
     const room = playRooms[roomName];
@@ -148,8 +150,7 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("attack", async (firstCard, secondCard) => {
-    console.log("new attack", firstCard);
-    console.log(selectedCards);
+   
     let firstplayer = null;
     let secondplayer = null;
 
@@ -189,7 +190,6 @@ io.on("connection", (socket) => {
         secondplayer
       );
     }
-    console.log("playerSoket", firstplayer, secondplayer);
   });
   socket.on("end-game", (player1Hp, player2Hp, soketId1, soketId2) => {
     if (soketId1 && player1Hp <= 0) {
@@ -202,7 +202,7 @@ io.on("connection", (socket) => {
       io.to(soketId1).emit("game-done", "you win");
     }
   });
-  socket.on("image-click", (url, soketId1, soketId2,roomId) => {
+  socket.on("image-click", (url, soketId1, soketId2, roomId) => {
     const roomName = roomId;
     console.log("imog", playRooms, "s1", soketId1, "s2", soketId2);
     const room = playRooms[roomName];
