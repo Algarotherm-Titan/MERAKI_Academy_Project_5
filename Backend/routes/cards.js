@@ -8,7 +8,8 @@ const {
   buyCard,
   getCardById,
   moreCard,
-  getRandomCards
+  getRandomCards,
+  updateCrypto
 } = require("../controller/cards");
 const authentication = require("../middleware/authentication");
 
@@ -22,6 +23,7 @@ cardRouter.post("/buy", authentication, buyCard);
 cardRouter.get('/cardWithId',getCardById)
 cardRouter.post('/moreCard',moreCard)
 cardRouter.post('/getRandomCards',getRandomCards)
+cardRouter.post('/updateCrypto',updateCrypto)
 
 
 module.exports = cardRouter;

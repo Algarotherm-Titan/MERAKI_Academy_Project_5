@@ -25,7 +25,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("user-selected", ({ selectedUserId, roomId, userId }) => {
-    console.log("User_selected", selectedUserId, roomId);
+    console.log("User_selected", selectedUserId, roomId,userId);
 
     try {
       const room = "room-" + selectedUserId + userId;
@@ -38,7 +38,7 @@ io.on("connection", (socket) => {
       if (selectedUserSocketId) {
         // io.to(selectedUserSocketId).emit("room-invite", selectedUserId,room);
 
-        io.emit("room-invite", selectedUserId, room);
+        io.emit("room-invite", selectedUserId, room,userId);
         console.log("my work here over");
       } else {
         console.error("Selected user is not connected:", selectedUserId);

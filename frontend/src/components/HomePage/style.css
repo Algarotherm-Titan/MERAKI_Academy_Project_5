@@ -13,6 +13,103 @@
     top:100px;
     left:10px
   }
+  .centered-content2 {
+    position: fixed;
+    bottom: 400px; /* Adjust the bottom position as needed */
+    right: 900px; /* Adjust the right position as needed */
+    width: 400px; /* Adjust the width as needed */
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+   
+    border-radius: 15px;
+  }
+  .inpute-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    width: 100%;
+    background-color: #fff;
+    position: sticky;
+    bottom: 0;
+    border-radius: 15px;
+
+  }
+  .chatbox {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 10px;
+    height: 400px; /* Set a fixed height to enable scrolling */
+    overflow-y: auto;
+    border: 1px solid #656565; 
+    border-radius: 15px;
+
+  }
+ .messageTop{
+  margin-bottom: 100px;
+  border: 1px solid #eee; 
+}
+ .sender,
+ .receiver {
+   display: flex;
+   flex-direction: column;
+ } 
+  .sender {
+    background-color: #0084FF;
+    color: #fff;
+    align-self: flex-end;
+    max-width: 60%;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    word-wrap: break-word;
+  }
+  
+  .receiver {
+    background-color: #e5e5ea;
+    color: #000;
+    align-self: flex-start;
+    max-width: 50%;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    word-wrap: break-word;
+  }
+  
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-top: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  
+  .send-button {
+    background-color: #0084FF;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .close-button {
+    background-color: #ccc;
+    color: #000;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .send-button,
+  .close-button {
+    width: 50%;
+    margin-top: 10px;
+  }
   .background-vido1{
     background-image: url('https://res.cloudinary.com/dmhvb05w3/image/upload/v1698234487/Screenshot_4_nqkk9m.png');
     background-size: cover;
@@ -23,6 +120,15 @@
     position: absolute;
     top:-50px
    }
+   .centered-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+  }
+
+  
    .background-vido2{
     background-image: url('https://res.cloudinary.com/dmhvb05w3/image/upload/v1698234651/Screenshot_5_ir64mr.png');
     background-size: cover;
@@ -78,10 +184,7 @@
     margin: 5px;
   }
   
-  .timestamp {
-    font-size: 12px;
-    color: gray;
-  }
+ 
   .chat{
 position: absolute;
 left:650px;

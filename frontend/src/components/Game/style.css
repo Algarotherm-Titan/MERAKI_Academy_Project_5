@@ -18,3 +18,36 @@
   background-color: white;
   box-shadow: 0 0 30px rgba(176, 113, 140, 0.35);
 }
+.overlays {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlays > div {
+  background: rgb(39, 38, 38,0.7); /* Background color for the message box */
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  color: white;
+  width: 500px;
+  height: 500px;
+  font-size: 100px;
+  position: absolute;
+}
+
+.overlays button {
+  background: #0074d9;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 10;
+}

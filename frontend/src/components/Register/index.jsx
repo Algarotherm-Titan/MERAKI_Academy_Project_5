@@ -34,7 +34,6 @@ const Register = () => {
         setInputUsername("");
         setInputPassword("");
         setInputEmail("");
-        setInputImage("");
         navigate("/Login");
       } else {
         throw new Error("Registration failed");
@@ -50,7 +49,7 @@ const Register = () => {
 
 <form class="form_container">
       <div class="logo_container">
-        <img src={""} />
+        <img src={"https://res.cloudinary.com/dmhvb05w3/image/upload/v1697139315/download-removebg-preview_amtoid.png"} />
       </div>
       <div class="title_container">
         <p class="title">Login to your Account</p>
@@ -64,15 +63,7 @@ const Register = () => {
         <label class="input_label" for="email_field">
           User Name
         </label>
-        <svg
-          fill="none"
-          viewBox="0 0 24 24"
-          height="24"
-          width="24"
-          xmlns="http://www.w3.org/2000/svg"
-          class="icon"
-        >
-        </svg>
+        
         <input
           placeholder="@user_name"
           title="Inpit title"
@@ -80,23 +71,14 @@ const Register = () => {
           type="text"
           class="input_field"
           id="email_field"
-          onChange={(e) => setInputEmail(e.target.value)}
+          onChange={(e) => setInputUsername(e.target.value)}
         />
       </div>
       <div class="input_container">
         <label class="input_label" for="email_field">
           Email
         </label>
-        <svg
-          fill="none"
-          viewBox="0 0 24 24"
-          height="24"
-          width="24"
-          xmlns="http://www.w3.org/2000/svg"
-          class="icon"
-        >
-        
-        </svg>
+
         <input
           placeholder="name@mail.com"
           title="Inpit title"
@@ -111,16 +93,6 @@ const Register = () => {
         <label class="input_label" for="password_field">
           Password
         </label>
-        <svg
-          fill="none"
-          viewBox="0 0 24 24"
-          height="24"
-          width="24"
-          xmlns="http://www.w3.org/2000/svg"
-          class="icon"
-        >
-
-        </svg>
         <input
           placeholder="Password"
           title="Inpit title"
@@ -159,15 +131,12 @@ const Register = () => {
       </button>
       <div class="separator">
         <span>
-          <Link to="/">already have an account</Link>
+          <Link to="/login">already have an account</Link>
         </span>
       </div>
       <div class="separator">
-        <hr class="line" />
-        <span>Or</span>
-        <hr class="line" />
+       
       </div>
-      <p class="note">Terms of use &amp; Conditions</p>
     </form>
     </>
   );

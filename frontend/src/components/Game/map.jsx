@@ -20,7 +20,7 @@ import {
 import { useColorModeValue } from "@chakra-ui/react";
 import GameNavbar from "./onlineUser";
 
-const socket = io("https://meraki-academy-project-5-socket.onrender.com");
+const socket = io("http://localhost:5001");
 
 const Map = () => {
   const online = useSelector((state) => state.auth.onlineUsers);
@@ -58,18 +58,7 @@ const Map = () => {
           console.log(error);
         });
     };
-    const setUser = async () => {
-      try {
-        const result = await axios.get(
-          "https://backend-kxp7.onrender.com/users/getAllUser"
-        );
-        if (result.data) {
-          setUsers(result.data);
-        }
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
+  
     
     getCards();
     return () => {

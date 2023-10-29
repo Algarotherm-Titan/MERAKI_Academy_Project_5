@@ -1,9 +1,11 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import "./style.css";
 import NavBar from "../Navbar";
+
+import { setLogout, setUser_id, setToggleProf } from "../redux/authSlicer/auth";
 import Friends from "../Friends";
 import { FaCog as SettingsIcon } from "react-icons/fa";
 import axios from "axios";
@@ -15,7 +17,8 @@ const ProfilePage = () => {
   const [div2Visible, setDiv2Visible] = useState(false);
   const [div3Visible, setDiv3Visible] = useState(false);
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.auth.token);
   const cards = useSelector((state) => state.cards.cards);
   const userCard = useSelector((state) => state.auth.userCards);
   const userInfo = useSelector((state) => state.auth.userInfo);
@@ -56,6 +59,13 @@ const ProfilePage = () => {
     getCards();
     console.log(UserCards);
   }, []);
+  
+  useEffect(() => {
+    console.log(token);
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token]);
   return (
     <>
       <NavBar />
@@ -69,11 +79,11 @@ const ProfilePage = () => {
               />
             </div>
             <div className="profile-picture">
-              <img src={userInfo.image} alt="Profile Picture" />
+              <img src={userInfo?.image} alt="Profile Picture" />
             </div>
             <div class="spinner">
               <span>
-                <h1 className="h1s">{userInfo.username}</h1>
+                <h1 className="h1s">{userInfo?.username}</h1>
               </span>
             </div>
             <div>

@@ -28,6 +28,7 @@ const commentRouter = require("./routes/comment");
 const notificationRouter = require("./routes/notification");
 const likeRouter = require("./routes/like");
 const cardRouter = require("./routes/cards");
+const chatRouter = require("./routes/chat");
 
 app.use(cors());
 app.use("/permission", permissionRouter);
@@ -39,6 +40,7 @@ app.use("/comment", commentRouter);
 app.use("/notif", notificationRouter);
 app.use("/like", likeRouter);
 app.use("/card", cardRouter);
+app.use("/chat", chatRouter);
 
 app.use("*", (req, res) => res.status(404).json("No content at this path"));
 

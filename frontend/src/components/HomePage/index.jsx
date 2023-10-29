@@ -4,6 +4,8 @@ import NavBar from "../Navbar";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import Footer from "../Navbar/footer";
+import { setRoomId } from "../redux/cardSlicer/card";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   Drawer,
@@ -23,30 +25,45 @@ import {
   Avatar,
   Text,
   VStack,
-  
   Input,
 } from "@chakra-ui/react";
 import Notification from "../notificationx/index";
 import { setPosts } from "../redux/postSlicer/post";
-import { setUsers } from "../redux/authSlicer/auth";
-
+import { setCards } from "../redux/cardSlicer/card";
 import io from "socket.io-client";
-const socket = io("https://meraki-academy-project-5-socket.onrender.com");
+const socket = io("http://localhost:5001");
 
 const HomePage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [messages, setMessages] = useState([]);
+  const [roomInvite, setRoomInvite] = useState("");
+  const [roomIdInput, setRoomIdInput] = useState("");
+  const [selectedRoomId, setSelectedRoomId] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const userId = useSelector((state) => state.auth.userId);
   const posts = useSelector((state) => state.posts.posts);
   const token = useSelector((state) => state.auth.token);
+  const [userToChat, setUserToChat] = useState("");
+  const [messageText, setMessageText] = useState("");
+  const [playerUserId, setPlayerUserId] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
+  const [chats, setChats] = useState([]);
   const [sendr, setSendr] = useState([]);
+  const [chatSendr, setChatSendr] = useState(null);
   const online = useSelector((state) => state.auth.onlineUsers);
   const users = useSelector((state) => state.auth.users);
-
+  const [showButtons, setShowButtons] = useState(false);
+  const formatTimestamp = () => {
+    const currentTime = new Date();
+    const hours = currentTime.getHours();
+    const minutes = currentTime.getMinutes();
+    return `${hours}:${minutes}`;
+  };
   const btnRef = useRef();
   const config = {
     headers: { Authorization: `Bearer ${token}` },
@@ -56,40 +73,118 @@ const HomePage = () => {
     const user = users?.find((user) => user.id === userId);
     return user;
   };
+  const generateUniqueRoomId = () => {
+    let roomId = "";
+    for (let i = 0; i < 4; i++) {
+      roomId += Math.floor(Math.random() * 10);
+    } // here we generate code with 4 numbers
+    return roomId;
+  };
+  const getCards = async () => {
+    await axios
+      .get(`http://localhost:5000/card`)
+      .then((res) => {
+        dispatch(setCards(res.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handleSelectUser = (selectedUserId) => {
+    const roomId = generateUniqueRoomId();
+    setSelectedRoomId(roomId);
+    socket.emit("user-selected", {
+      selectedUserId,
+      roomId,
+      userId,
+      username: userInfo.username,
+    });
+  };
+
+  const handleJoinRoom = async (room) => {
+    try {
+      socket.emit("player-join", roomIdInput, selectedRoomId, userId);
+      console.log("rooms", roomIdInput);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  useEffect(() => {
+    socket.on("room-invite", (selectedUserId, room, username) => {
+      if (userId === selectedUserId) {
+        setRoomInvite(true);
+        setRoomIdInput(room);
+        setPlayerUserId("");
+        setPlayerUserId(username);
+        console.log("test for to ", playerUserId);
+      }
+    });
+    socket.on("game-start", (roomIdInput) => {
+      console.log("players-ready to fight ", roomIdInput);
+      console.log("test", roomIdInput);
+      dispatch(setRoomId(roomIdInput));
+      navigate("/game");
+    });
+
+    socket.on("chatMessage", (message, sender) => {
+      console.log(message, sender);
+
+      setChatMessages([...chatMessages, message]);
+      setSendr([...sendr, sender]);
+    });
+    socket.on("chat-Message", (chats, userToChats, userID) => {
+      if (userID === userId && userToChat === userToChats) console.log(chats);
+      setChatSendr(userID);
+      setChats((prevChats) => [...prevChats, chats]);
+    });
+    getCards()
+    return () => {
+      socket.off("room-invite");
+      socket.off("game-start");
+      socket.off("chat-Message");
+    };
+  }, [roomIdInput]);
+
+  useEffect(() => {
+    const interval = setInterval(nextImage, 5000);
+    fetchUsername();
+    // getPosts();
+    return () => {
+      clearInterval(interval);
+    };
+  }, [currentImageIndex, posts, chatMessages, userId]);
+
+  const getMessages = async (selectedUserId) => {
+    let senderId = userId;
+    let receiverId = selectedUserId;
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/chat/${senderId}/${receiverId}`
+      );
+      setMessages(response.data.messages);
+    } catch (error) {
+      console.error("Error fetching messages:", error.message);
+    }
+  };
   const onOpen = () => {
     setIsOpen(true);
   };
-
   const onClose = () => {
     setIsOpen(false);
   };
-
   const nextImage = () => {
     setCurrentImageIndex((prevIndex) => (prevIndex + 1) % posts.length);
-    console.log("nextImage: " + posts[currentImageIndex]?.image_url);
   };
-
   const prevImage = () => {
     setCurrentImageIndex((prevIndex) =>
       prevIndex === 0 ? posts.length - 1 : prevIndex - 1
     );
     console.log("prevImage: ");
   };
-
-  const setUser = async () => {
-    try {
-      const result = await axios.get("https://backend-kxp7.onrender.com/users/getAllUser");
-      if (result) {
-        setUsers(result.data);
-      }
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-
   const getPosts = async () => {
     try {
-      const res = await axios.get(`https://backend-kxp7.onrender.com/posts/`, config);
+      const res = await axios.get(`http://localhost:5000/posts`, config);
       const rever = res.data.result;
       dispatch(setPosts([...rever].reverse()));
     } catch (error) {
@@ -97,57 +192,68 @@ const HomePage = () => {
     }
   };
 
-  useEffect(() => {
-    const interval = setInterval(nextImage, 5000);
-    getPosts();
-    setUser();
-    return () => {
-      clearInterval(interval);
-    };
-  }, [currentImageIndex, posts, chatMessages]);
-
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
   };
-
-  useEffect(() => {
-    socket.on("chatMessage", (message, sender) => {
-      console.log(message, sender);
-
-      setChatMessages([...chatMessages, message]);
-      setSendr([...sendr, sender]);
-    });
-    return () => {
-      socket.off("chatMessage");
-    };
-  });
-
   const sendMessage = () => {
     if (message) {
-      console.log(message, userInfo["username"]);
       socket.emit("chatMessage", message, userInfo["username"]);
       setMessage("");
     }
   };
 
-  const formatTimestamp = () => {
-    const currentTime = new Date();
-    const hours = currentTime.getHours();
-    const minutes = currentTime.getMinutes();
-    return `${hours}:${minutes}`;
-  };
-  const sendFriendsRequest = async (reqsTo) => {
+  // const sendFriendsRequest = async (reqsTo) => {
+  //   try {
+  //     const response = await axios.post(`http://localhost:5000/addFriends`, {
+  //       reqsFrom: userId,
+  //       reqsTo: reqsTo,
+  //     });
+  //     console.log("work");
+  //     if (response.data.success) {
+  //       // console.log(response.data.message);
+  //     }
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // };
+
+  const fetchUsername = async () => {
     try {
-      const response = await axios.post(`https://backend-kxp7.onrender.com/addFriends`, {
-        reqsFrom: userId,
-        reqsTo: reqsTo,
+      const chatUserId = await getUsernameForChat();
+    } catch (error) {
+      console.error("Error fetching username:", error.message);
+    }
+  };
+  const getUsernameForChat = () => {
+    const user = users?.find((user) => user.id === userToChat);
+    if (user) {
+      return user.id;
+    } else {
+      return null; // User not found
+    }
+  };
+  const chat = (selectedUserId) => {
+    setIsOpen2(true);
+    setUserToChat(selectedUserId);
+    getMessages(selectedUserId);
+  };
+  const chatMessage = () => {
+    console.log("chat-Message", messageText, userToChat, userId);
+    socket.emit("chat-Message", messageText, userToChat, userId);
+  };
+  const sendMessages = async () => {
+    try {
+      const response = await axios.post(`http://localhost:5000/chat`, {
+        sender_id: userId,
+        receiver_id: userToChat,
+        message_text: messageText,
       });
-console.log("work");
-      if (response.data.success) {
-        // console.log(response.data.message);
+      if (response) {
+        chatMessage();
+        setMessageText("");
       }
     } catch (error) {
-      console.log(error.message);
+      console.error("Error sending message:", error.message);
     }
   };
 
@@ -156,52 +262,136 @@ console.log("work");
       <NavBar />
       <Notification />
       <div className="HomePage-container">
-        <div className="background-vido1">
-         
-        </div>
+        <div className="background-vido1"></div>
         <div className="message">
           <ul className="news__tab__list">
             <li className="news__tab__item news__tab__item--active">message</li>
           </ul>
           <ul className="news__list">
-          <div className="chat-messages">
-                    {chatMessages.slice(0, 5).map((message, index) => (
-                      <div key={index} className="chat-message">
-                        <span className="sender">{sendr[index]}</span>
-                        <p>{message}</p>
-                        <span className="timestamp">{formatTimestamp()}</span>
-                      </div>
-                    ))}
-                  </div>
+            <div className="chat-messages">
+              {chatMessages?.slice(0, 5).map((message, index) => (
+                <div key={index} className="chat-message">
+                  <span className="sender">{sendr[index]}</span>
+                  <p>{message}</p>
+                  <span className="timestamp">{formatTimestamp()}</span>
+                </div>
+              ))}
+            </div>
           </ul>
         </div>
         <div className="onlineUsers">
-        <List>
-        {otherOnlineUsers?.map((selectedUserId) => {
-          const user = getUserInfo(selectedUserId);
-          return (
-            <ListItem
-              key={selectedUserId}
-              display="flex"
-              alignItems="center"
-              mb={2}
-              borderRadius="md"
-              color="black"
-              boxSize="100px"
-              onClick={() => sendFriendsRequest(selectedUserId)} // Make the whole ListItem clickable
-              style={{ cursor: "pointer" }} // Add a pointer cursor on hover
-            >
-              <VStack alignItems="center">
-                <Avatar src={user?.image} alt={user?.username} size="xl" />
-              </VStack>
-            </ListItem>
-          );
-        })}
-      </List>
-        </div>
-       
-        <div className="chat">
+          <List>
+            {otherOnlineUsers?.map((selectedUserId) => {
+              const user = getUserInfo(selectedUserId);
 
+              const toggleButtons = () => {
+                setShowButtons(!showButtons);
+              };
+
+              return (
+                <ListItem
+                  key={selectedUserId}
+                  display="flex"
+                  alignItems="center"
+                  mb={2}
+                  borderRadius="md"
+                  color="black"
+                  boxSize="100px"
+                  onClick={toggleButtons}
+                  style={{ cursor: "pointer" }}
+                >
+                  <VStack alignItems="center">
+                    <Avatar src={user?.image} alt={user?.username} size="xl" />
+                  </VStack>
+                  {showButtons && (
+                    <div style={{ padding: "5px" }}>
+                      <Button
+                        m={"10px"}
+                        size={{ base: "xs", md: "lg" }}
+                        onClick={() => chat(selectedUserId)}
+                      >
+                        Open Chat Witth Friend
+                      </Button>
+                      <Button
+                        m={"10px"}
+                        size={{ base: "xs", md: "lg" }}
+                        onClick={() => handleSelectUser(selectedUserId)}
+                      >
+                        Send Battle Request
+                      </Button>
+                    </div>
+                  )}
+                </ListItem>
+              );
+            })}
+          </List>
+        </div>
+        {isOpen2 && (
+          <div className="centered-content2">
+            <div className="chatbox">
+              {messages?.map((message) => (
+                <div
+                  key={message.message_id}
+                  className={
+                    message.sender_id === userId ? "sender" : "receiver"
+                  }
+                >
+                  <div className="messageop">
+                    <p className="messageText"> {message.message_text}</p>
+                    <span className="messageText"> {message.timestamp}</span>
+                  </div>
+                </div>
+              ))}
+                {chats?.map((message, index) => (
+                  <div
+                    key={index}
+                    className={chatSendr === userId ? "sender" : "receiver"}
+                  >
+                    <div className="messageop">
+                      <p className="messageText">{message}</p>
+                      <span className="messageTimestamp">
+                        {formatTimestamp()}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+            </div>
+            <div className="inpute-button">
+              <input
+                type="text"
+                value={messageText}
+                onChange={(e) => setMessageText(e.target.value)}
+                placeholder="Type your message..."
+                style={{
+                  border: "1px solid #ccc",
+                  padding: "5px",
+                  width: "100%",
+                }}
+              ></input>
+              <button className="send-button" onClick={() => sendMessages()}>
+                Send
+              </button>
+              <button
+                className="close-button"
+                onClick={() => setIsOpen2(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="centered-content">
+          {roomInvite && (
+            <Box mt={4}>
+              <Text fontWeight="bold">Game Invitation:{playerUserId}</Text>
+              <Button onClick={handleJoinRoom}>Join Game</Button>
+              <Button onClick={() => setRoomInvite(false)}>Ruffus</Button>
+            </Box>
+          )}
+        </div>
+
+        <div className="chat">
           <div className="chat">
             <Button ref={btnRef} colorScheme="teal" onClick={onOpen}>
               world
@@ -233,6 +423,7 @@ console.log("work");
                     type="text"
                     value={message}
                     onChange={handleMessageChange}
+                    style={{ border: "1px solid #ccc", padding: "5px" }}
                   />
                   <Button variant="outline" mr={3} onClick={onClose}>
                     Close
@@ -246,7 +437,6 @@ console.log("work");
           </div>
         </div>
         <div className="background-vido2">
-          
           <h1 className="posto">News</h1>
           <div className="posts">
             <ul className="news__tab__list">
