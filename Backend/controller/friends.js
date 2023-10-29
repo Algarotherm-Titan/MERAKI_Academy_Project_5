@@ -24,8 +24,8 @@ const sendFreindReq = async (req, res) => {
     const friendRequestId = rows[0].id;
 
 
-    const insertNotificationQuery = `INSERT INTO notification (sender_id, receiver_id,friend_request) VALUES ($1,$2,$3);`;
-    const notificationData = [reqsFrom, reqsTo, friendRequestId];
+    // const insertNotificationQuery = `INSERT INTO notification (sender_id, receiver_id,friend_request) VALUES ($1,$2,$3);`;
+    // const notificationData = [reqsFrom, reqsTo, friendRequestId];
 
     const notificatioResult = await pool.query(
       insertNotificationQuery,

@@ -26,9 +26,9 @@
 }
 .frienddiv .inside{
     display: grid;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
     position: relative;
-    left: 40px;
+    left: 150px;
 }
 .p{
     position: relative;
@@ -53,12 +53,13 @@
 
 }
 
-@media screen and (max-width: 769px){
-.test{
-    width: 500px;
-    margin: 5px;
-    padding: 5px;
+.test2{
+    display: grid;
+    grid-template-columns: auto auto;
+    position: relative;
+    width: 600px;
+    gap:10px;
+    top:-10px
 }
 
-}
 

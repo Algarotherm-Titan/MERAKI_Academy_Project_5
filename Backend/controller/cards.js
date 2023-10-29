@@ -1,5 +1,6 @@
 const { pool } = require("../models/db");
 const axios = require("axios");
+const cardData = require("../set1-en_us");
 const addCardsFromApi = (req, res) => {
   const api_url =
     "https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=metal%20raiders&attribute=dark";
@@ -256,22 +257,32 @@ const getRandomCards = async (req, res) => {
     const rows = await pool.query(
       "SELECT * FROM cards ORDER BY RANDOM() LIMIT 5"
     );
-    console.log(rows.rows);
+
     const randomCards = rows.rows.map((row) => row.card_id); // Access 'rows' property
-    const image = rows.rows.map((row) => row.card_image)
     for (const card of randomCards) {
       await pool.query(
         "INSERT INTO user_cards (user_id, card_id) VALUES ($1, $2)",
         [userId, card]
       );
     }
-    res.json({ randomCards, cryptoAmount: newCryptoAmount ,image});
+    res.json({ randomCards, cryptoAmount: newCryptoAmount });
   } catch (error) {
     console.error("Error in getRandomCards:", error.message);
     res.status(500).json({ error: "An error occurred" });
   }
 };
-
+const updateCrypto = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    await pool.query(
+      "UPDATE users SET crypto_amount = crypto_amount + 500 WHERE id = $1",
+      [userId]
+    );
+    res.status(200).json({ message: "Crypto amount updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 module.exports = {
   addCardsFromApi,
   getAllCards,
@@ -281,4 +292,5 @@ module.exports = {
   buyCard,
   moreCard,
   getRandomCards,
+  updateCrypto,
 };

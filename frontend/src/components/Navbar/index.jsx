@@ -15,6 +15,7 @@ const NavBar = ({ users, getUserByID, getPostsByUser }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLogged = useSelector((state) => state.auth.isLogged);
+  const token = useSelector((state) => state.auth.token);
   const userInfo = useSelector((state) => state.auth.userInfo);
   const userId = useSelector((state) => state.auth.userId);
   const userss = useSelector((state) => state.auth.users);
@@ -26,13 +27,14 @@ const NavBar = ({ users, getUserByID, getPostsByUser }) => {
       socket.emit("user-logout", userId);
     }
     dispatch(setLogout());
+    
   };
 
   useEffect(() => {
-    if (!isLogged) {
+    if (!token) {
       navigate("/login");
     }
-  }, [isLogged]);
+  }, [token]);
 
   return (
     <>
@@ -40,7 +42,13 @@ const NavBar = ({ users, getUserByID, getPostsByUser }) => {
         <Navbar key={expand} expand={expand} id="id">
           <Container fluid>
             <Navbar.Brand href="#">
-              <img className="img" src={"https://res.cloudinary.com/dmhvb05w3/image/upload/v1697139315/download-removebg-preview_amtoid.png"} alt="" />
+              <img
+                className="img"
+                src={
+                  "https://res.cloudinary.com/dmhvb05w3/image/upload/v1697139315/download-removebg-preview_amtoid.png"
+                }
+                alt=""
+              />
             </Navbar.Brand>
             <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
             <Navbar.Offcanvas
@@ -95,13 +103,9 @@ const NavBar = ({ users, getUserByID, getPostsByUser }) => {
                     SHOP
                   </Link>
 
-                  {isLogged ? (
-                    <Link onClick={handleLogout} className="logfont">
-                      Logout
-                    </Link>
-                  ) : (
-                    ""
-                  )}
+                  <button onClick= { ()=> (handleLogout())} className="logfont">
+                    Logout
+                  </button>
                 </Nav>
               </Offcanvas.Body>
             </Navbar.Offcanvas>

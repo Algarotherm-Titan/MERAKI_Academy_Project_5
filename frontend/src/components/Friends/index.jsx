@@ -128,7 +128,7 @@ const Friends = () => {
       <UnorderedList listStyleType="none">
       <p className="p2">Friend Request</p>
     {pendingRequests.map((request) => (
-      <ListItem key={request.id} borderBottom="1px solid #ccc" py={3} display="flex" alignItems="center" className="test">
+      <ListItem key={request.id} borderBottom="1px solid #ccc" py={2}  gap={5} display="flex" alignItems="center" className="test2">
         <Box marginRight="0px">
           <Image src={request.image} alt="image" boxSize="100px" borderRadius="50%" />
         </Box>

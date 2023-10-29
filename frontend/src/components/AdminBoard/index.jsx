@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Link,useNavigate } from "react-router-dom";
 import {
   Badge,
   Button,
@@ -21,6 +22,8 @@ import NavBar from "../Navbar";
 import AddPost from "../AddPost/index";
 const Admin = () => {
   const userInfo = useSelector((state) => state.auth.userInfo);
+  const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     userId: "",
     newRoleId: "",
@@ -33,7 +36,12 @@ const Admin = () => {
       [name]: value,
     });
   };
-
+  useEffect(() => {
+    console.log(token);
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token]);
   const data = async () => {
     try {
       const response = await axios.put("http://localhost:5000/beAdmin", {
@@ -68,7 +76,7 @@ const Admin = () => {
                   <Image
                     objectFit="cover"
                     boxSize="100%"
-                    src={userInfo.image}
+                    src={userInfo?.image}
                     alt="#"
                   />
                   <Text fontWeight={600} color={"black.500"} size="sm" mb={1}>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Box,
   Image,
@@ -12,7 +13,7 @@ import { Button } from "@chakra-ui/react";
 import GameNavbar from "./onlineUser";
 import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
-const socket = io("https://meraki-academy-project-5-socket.onrender.com");
+const socket = io("http://localhost:5001");
 import NavBar from "../Navbar";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
@@ -50,7 +51,6 @@ const Game = () => {
   const cards = useSelector((state) => state.cards.cards);
   const userCard = useSelector((state) => state.auth.userCards);
   const roomId = useSelector((state) => state.cards.roomId);
-
   const navigate = useNavigate();
   const emoi = [
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEqqU7XZHsOKyFF96sXq21J8Z57OrLf9iBBLkIoLWjlRUFkw1yTw7QnWyCv3WtZAIZLsg&usqp=CAU",
@@ -62,13 +62,13 @@ const Game = () => {
   const userCardIds = userCard
     ? userCard.map((userCard) => userCard.card_id)
     : [];
-
   const UserCards = cards?.filter((card) => userCardIds.includes(card.card_id));
 
   const toggleReady = () => {
     if (!isButtonDisabled) {
       setIsReady(!isReady);
       setIsButtonDisabled(true);
+      console.log(userId,roomId);
       socket.emit("player-ready", userId,roomId);
     }
   };
@@ -176,10 +176,9 @@ const Game = () => {
         removeCardFromSelcted(firstCard);
       }
     });
-    if (gameEndmessage) {
-      navigate("/map");
-    }
+   
     if ((currentRound > 1 && player1Hp <= 0) || player2Hp <= 0) {
+      updateCrypto()
       socket.emit("end-game", player1Hp, player2Hp, soketId1, soketId2);
     }
     socket.on("game-over", (message) => {
@@ -228,7 +227,21 @@ const Game = () => {
     selectedCards,
     gameEndmessage,
   ]);
-
+  const updateCrypto = async () => {
+    if (gameEndmessage === "you win") {
+    
+      axios
+        .post("http://localhost:5000/card/updateCrypto", userId)
+        .then((response) => {
+          if (response) {
+            console.log("Crypto amount updated successfully");
+          } 
+        })
+        .catch((error) => {
+          console.error("Network error:", error);
+        });
+    }
+  };
   const removeCardFromSelcted = (cardToRemove) => {
     console.log("i am try to remove");
     setSelectedCards((prevHand) =>
@@ -296,7 +309,15 @@ const Game = () => {
       }}
     >
       <GameNavbar />
-      <div> {gameEndmessage}</div>
+      <div>
+      {gameEndmessage && (
+        <div className="overlays">
+          <div>{gameEndmessage}</div>
+          <button onClick={() => navigate("/map")}>Back to Map</button>
+        </div>
+      )}
+      {/* The rest of your page content */}
+    </div>
       <Grid>
         {Array.isArray(imogj) &&
           imogj.map((url) => (
